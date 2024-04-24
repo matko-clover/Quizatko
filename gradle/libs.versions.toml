@@ -2,7 +2,7 @@
 accompanistSwiperefresh = "0.24.2-alpha"
 activityComposeVersion = "1.6.0-alpha01"
 agp = "8.3.2"
-converterMoshi = "2.9.0"
+converterGson = "2.11.0"
 core = "1.9.63"
 coreVersion = "1.1.2-beta"
 converterGson = "2.11.0"
@@ -34,6 +34,7 @@ androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "core" }
 core-v112beta = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "coreVersion" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }

@@ -7,7 +7,7 @@ data class QuestionsResponse(
 )
 
 data class ResultsResponse(
-    val questions: String,
+    val question: String,
 
     @SerializedName(value = "correct_answer")
     val correctAnswer: String,

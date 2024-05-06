@@ -11,3 +11,5 @@ Clean Architecture/MVVM: https://medium.com/@ami0275/mvvm-clean-architecture-pat
 
 Dependency Injection: https://developer.android.com/training/dependency-injection
                       https://developer.android.com/training/dependency-injection/hilt-android
+
+Kotlin Flow: https://developer.android.com/kotlin/flow

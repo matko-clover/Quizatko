@@ -13,3 +13,5 @@ Dependency Injection: https://developer.android.com/training/dependency-injectio
                       https://developer.android.com/training/dependency-injection/hilt-android
 
 Kotlin Flow: https://developer.android.com/kotlin/flow
+
+Jetpack Compose: https://developer.android.com/develop/ui/compose

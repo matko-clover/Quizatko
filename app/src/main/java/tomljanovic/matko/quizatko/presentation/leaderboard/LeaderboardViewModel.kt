@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import tomljanovic.matko.quizatko.domain.model.LeaderboardItem
 import tomljanovic.matko.quizatko.domain.repository.LeaderboardRepository
 import tomljanovic.matko.quizatko.util.Resource
 import javax.inject.Inject
@@ -19,6 +20,10 @@ class LeaderboardViewModel @Inject constructor(
 
     init {
         getLeaderboard()
+    }
+
+    fun addPlayer(leaderboardItem: LeaderboardItem) = viewModelScope.launch {
+        repo.addToLeaderboard(leaderboardItem)
     }
 
     fun getLeaderboard() = viewModelScope.launch {

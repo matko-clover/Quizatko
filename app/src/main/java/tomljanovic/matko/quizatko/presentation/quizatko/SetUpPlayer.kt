@@ -26,12 +26,15 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import timber.log.Timber
 import tomljanovic.matko.quizatko.R
+import tomljanovic.matko.quizatko.presentation.destinations.TriviaScreenDestination
 import tomljanovic.matko.quizatko.presentation.leaderboard.LeaderboardViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -46,7 +49,7 @@ fun SetUpPlayer(
         mutableStateOf("")
     }
 
-    val isPlayerNameValid = remember(playerName) {
+    val isPlayerNameValid = remember(playerName.value) {
         playerName.value.trim().isNotEmpty()
     }
 
@@ -54,7 +57,7 @@ fun SetUpPlayer(
         mutableStateOf("")
     }
 
-    val isQuestionNumberValid = remember(questionNumber) {
+    val isQuestionNumberValid = remember(questionNumber.value) {
         questionNumber.value.toIntOrNull() in 1..50
     }
 
@@ -77,9 +80,16 @@ fun SetUpPlayer(
                 style = MaterialTheme.typography.titleLarge
             )
 
-            // TODO SetUpEditText
-            SetUpEditText {
-
+            SetUpEditText(
+                valueState = playerName.value,
+                imeAction = ImeAction.Next,
+                onAction = KeyboardActions {
+                    if (!isPlayerNameValid) return@KeyboardActions
+                    keyBoardController?.hide()
+                }
+            ) {
+                Timber.d("Player name: $it")
+                playerName.value = it
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -98,31 +108,45 @@ fun SetUpPlayer(
                 style = MaterialTheme.typography.bodySmall
             )
 
-            // TODO SetUpEditText
-            SetUpEditText {
-
+            SetUpEditText(
+                valueState = questionNumber.value,
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done,
+                onAction = KeyboardActions {
+                    if (!isQuestionNumberValid) return@KeyboardActions
+                    keyBoardController?.hide()
+                }
+            ) { number ->
+                Timber.d("number name: $number")
+                questionNumber.value = (number.toIntOrNull() ?: 10).toString()
             }
 
             Spacer(modifier = Modifier.height(56.dp))
 
-            // TODO Trivia Buttons
             TriviaButtons(
                 drawableId = R.drawable.img_play,
-                buttonText = "Start quiz"
+                buttonText = "Start quiz",
+                enabled = isPlayerNameValid && isQuestionNumberValid
             ) {
-
+                navigator?.navigate(
+                    TriviaScreenDestination(
+                        maxQuestions = questionNumber.value.toIntOrNull() ?: 10,
+                        playerName = playerName.value
+                    )
+                )
             }
         }
     }
 }
 
+@Preview
 @Composable
 fun SetUpEditText(
     valueState: String = "",
     onAction: KeyboardActions = KeyboardActions.Default,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit = {}
 ) {
     OutlinedTextField(
         value = valueState,

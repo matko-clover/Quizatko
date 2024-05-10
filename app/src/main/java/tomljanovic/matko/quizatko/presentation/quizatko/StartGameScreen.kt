@@ -43,7 +43,7 @@ fun StartGameScreen(
         ) {
             TriviaButtons(
                 drawableId = R.drawable.img_play,
-                buttonText = "Star quiz"
+                buttonText = "Start quiz"
             ) {
                 navigator?.navigate(SetUpPlayerDestination)
             }

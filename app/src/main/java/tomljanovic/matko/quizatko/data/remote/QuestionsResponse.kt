@@ -12,6 +12,6 @@ data class ResultsResponse(
     @SerializedName(value = "correct_answer")
     val correctAnswer: String,
 
-    @SerializedName(value = "incorrect_answer")
+    @SerializedName(value = "incorrect_answers")
     val incorrectAnswer: MutableList<String>
 )

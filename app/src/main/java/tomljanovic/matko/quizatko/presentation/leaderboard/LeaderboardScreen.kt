@@ -1,16 +1,23 @@
 package tomljanovic.matko.quizatko.presentation.leaderboard
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,8 +25,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -47,22 +58,49 @@ fun LeaderboardScreen(
     ) {
         if (state.isLoading) {
             // TODO add loading Box
-
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(56.dp)
+                )
+            }
         } else {
-            LeaderboardTitle()
+            if (state.items.isNotEmpty()) {
+                LeaderboardTitle()
 
-            // TODO make LazyColumn
+                LazyColumn(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    itemsIndexed(
+                        items = state.items.sortedByDescending { it.score }
+                    ) { index, item ->
+                        if (index < 3) {
+                            TopPlayers(
+                                leaderBoardPlayer = item,
+                                place = index + 1
+                            )
+                        } else {
+                            OtherPlayers(
+                                leaderBoardPlayer = item,
+                                place = index + 1
+                            )
+                        }
+                    }
+                }
 
-            Text(
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-                    .clickable {
-                        navigator?.navigate(StartGameScreenDestination)
-                    },
-                text = "Back",
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge
-            )
+                Text(
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .clickable {
+                            navigator?.navigate(StartGameScreenDestination)
+                        },
+                    text = "Back",
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
         }
     }
 }
@@ -77,7 +115,19 @@ fun LeaderboardTitle() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // TODO
+        Image(
+            painter = painterResource(id = R.drawable.img_medal),
+            contentDescription = null,
+            modifier = Modifier.padding(top = 32.dp)
+        )
+        Text(
+            text = "Leaderboard",
+            modifier = Modifier.padding(bottom = 32.dp),
+            textDecoration = TextDecoration.Underline,
+            style = MaterialTheme.typography.displayMedium,
+            color = Color(0xFFFFCB00),
+            fontWeight = FontWeight.W500
+        )
     }
 }
 
@@ -87,8 +137,19 @@ fun TopPlayers(
     leaderBoardPlayer: LeaderboardItem = LeaderboardItem(score = 0, name = "Test"),
     place: Int = 1
 ) {
-    // TODO surfaceSize
-    val surfaceSize = 40.dp
+    val surfaceSize = when (place) {
+        1 -> 56.dp
+        2 -> 48.dp
+        3 -> 40.dp
+        else -> 40.dp
+    }
+
+    val color = when (place) {
+        1 -> Color(0xFFFFCB00)
+        2 -> Color(0xFFD4D4D4)
+        3 -> Color(0xFFE18A3A)
+        else -> Color(0xFFE18A3A)
+    }
 
     Row(
         modifier = Modifier
@@ -102,10 +163,36 @@ fun TopPlayers(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // TODO - Surface with Text
+            Surface(
+                modifier = Modifier.size(surfaceSize),
+                shape = CircleShape,
+                color = color
+            ) {
+                Text(
+                    text = place.toString(),
+                    modifier = Modifier.wrapContentSize(),
+                    color = Color.Black,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
         }
 
-        // TODO texts
+        Text(
+            text = leaderBoardPlayer.name,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 16.dp),
+            color = Color.White,
+            style = MaterialTheme.typography.titleLarge
+        )
+
+        Text(
+            text = leaderBoardPlayer.score.toString(),
+            color = Color(0xFFFFCB00),
+            modifier = Modifier.padding(end = 16.dp),
+            style = MaterialTheme.typography.titleLarge
+
+        )
     }
 }
 
@@ -156,5 +243,11 @@ fun OtherPlayersText(
     text: String = "",
     isBolded: Boolean = false
 ) {
-    // TODO make Text
+    Text(
+        modifier = modifier,
+        text = text,
+        color = Color.Black,
+        fontSize = 17.sp,
+        fontWeight = if (isBolded) FontWeight.Bold else FontWeight.Normal
+    )
 }
